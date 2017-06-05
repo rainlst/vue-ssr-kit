@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="utf-8">
+    <title>首页</title>
+    <% for (var chunk of webpack.chunks) {
+        for (var file of chunk.files) {
+          if (file.match(/\.(js|css)$/ && htmlWebpackPlugin.options.allowFiles.test(file))) { %>
+    <link rel="<%= chunk.initial ? 'preload' : 'prefetch' %>" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/) ? 'style' : 'script' %>"><% }}} %>
+  </head>
+
+  <body>
+    <div class="app-ctnr">
+      <div id="client-content" class="client-content">
+        <navbar></navbar>
+      </div>
+
+      <div id="ssr-content" class="ssr-content">
+        <!--vue-ssr-outlet-->
+      </div>
+    </div>
+  </body>
+</html>
