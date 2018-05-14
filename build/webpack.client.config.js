@@ -38,6 +38,11 @@ Object.keys(projectConfig.pages).forEach(pageName => {
       filename: pageName + '.html',
       template: projectConfig.pages[pageName].template,
       chunks: ['manifest', 'vendor', pageName],
+      minify: {
+        removeComments: false,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      }
     })
   )
 })

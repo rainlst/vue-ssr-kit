@@ -39,7 +39,7 @@ Object.keys(projectConfig.pages).forEach(pageName => {
       }
     },
 
-    externals: Object.keys(require('../package.json').dependencies),
+    // externals: Object.keys(require('../package.json').dependencies),
 
     plugins: [
       new webpack.DefinePlugin(Object.assign({}, projectConfig.env, {
