@@ -25,7 +25,7 @@ if (isProd) {
   pagesList.forEach(pageName => {
     const pageConfig = projectConfig.pages[pageName]
     if (!pageConfig.useSSR) { return }
-    const bundle = require(resolve(`./dist/ssr-bundle.${pageName}.json`))
+    const bundle = require(resolve(`./dist/static/ssr/ssr-bundle.${pageName}.json`))
     try {
       const template = fs.readFileSync(resolve(`./dist/${pageName}.html`), 'utf-8')
       global.renderers[pageName] = createRenderer(bundle, template)

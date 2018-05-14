@@ -117,11 +117,11 @@ module.exports = function setupDevServer (app, cb) {
       stats.warnings.forEach(err => console.warn(err))
 
       // 读取对应页面的 server-bundle.
-      const bundlePath = path.join(webpackConfig.output.path, `ssr-bundle.${pageName}.json`)
+      const bundlePath = path.join(webpackConfig.output.path, `static/ssr/ssr-bundle.${pageName}.json`)
       try {
         bundles[pageName] = JSON.parse(mfs.readFileSync(bundlePath, 'utf-8'))
       } catch (error) {
-        console.error(`[Error] ssr-bundle.${pageName}.json 读取失败: ${error}`)
+        console.error(`[Error] static/ssr/ssr-bundle.${pageName}.json 读取失败: ${error}`)
         process.exit(1)
       }
 
