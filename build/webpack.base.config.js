@@ -5,6 +5,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 
 const vueConfig = require('./vue-loader.config')
@@ -30,7 +31,13 @@ Object.keys(projectConfig.pages).forEach(pageName => {
 })
 
 const plugins = [
-  new ExtractTextPlugin('[name].[contenthash].css')
+  new OptimizeCSSPlugin({
+    cssProcessor: require('cssnano'),
+    cssProcessorOptions: {
+      autoprefixer: false
+    }
+  }),
+  new ExtractTextPlugin('static/css/[name].[contenthash].css')
 ]
 
 module.exports = {
@@ -43,7 +50,7 @@ module.exports = {
     publicPath: isProd
       ? '/'
       : '/dist/',
-    filename: '[name].[chunkhash].js'
+    filename: 'static/js/[name].[chunkhash].js'
   },
 
   resolve: {
@@ -78,7 +85,9 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: 'assets/[name].[ext]?[hash]'
+          name: isProd
+          ? '/static/img/[name].[hash].[ext]'
+          : 'static/img/[name].[hash].[ext]'
         }
       }, {
         test: /\.css$/,

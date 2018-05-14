@@ -48,7 +48,7 @@ Object.keys(projectConfig.pages).forEach(pageName => {
       })),
 
       new VueSSRPlugin({
-        filename: `ssr-bundle.${pageName}.json`
+        filename: `./static/ssr/ssr-bundle.${pageName}.json`
       })
     ]
   })

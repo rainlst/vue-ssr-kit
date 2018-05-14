@@ -6,6 +6,7 @@ const webpack = require('webpack')
 const HTMLPlugin = require('html-webpack-plugin')
 const merge = require('webpack-merge')
 const SWPrecachePlugin = require('sw-precache-webpack-plugin')
+const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 
 const base = require('./webpack.base.config')
 const projectConfig = require('../config')
@@ -25,6 +26,10 @@ const config = merge(base, {
 
     new webpack.optimize.CommonsChunkPlugin({
       name: ['vendor', 'manifest']
+    }),
+
+    new VueSSRClientPlugin({
+      filename: `static/ssr/manifest-ssr.json`
     })
   ]
 })
