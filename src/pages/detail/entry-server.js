@@ -5,7 +5,7 @@ async function prefetch (context) {
   // console.log(context) // to get url router
   await new Promise((resolve, reject) => {
     setTimeout(function () {
-      context.title='hello title'
+      context.title='hello world'
       store.state.test = 'ssr from store'
       console.log('run in prefetch')
       resolve('success')
