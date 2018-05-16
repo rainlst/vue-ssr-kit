@@ -19,16 +19,20 @@ const config = merge(base, {
   },
 
   plugins: [
-    new webpack.DefinePlugin(Object.assign({}, projectConfig.env, {
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-      'process.env.VUE_ENV': JSON.stringify('client')
-    })),
+    new webpack.DefinePlugin(
+      Object.assign({}, projectConfig.env, {
+        'process.env.NODE_ENV': JSON.stringify(
+          process.env.NODE_ENV || 'development'
+        ),
+        'process.env.VUE_ENV': JSON.stringify('client')
+      })
+    ),
 
     new webpack.optimize.CommonsChunkPlugin({
       name: ['vendor', 'manifest']
     }),
 
-    new VueSSRClientPlugin({filename:'./static/ssr/vue-ssr-manifest.json'})
+    new VueSSRClientPlugin({ filename: './static/ssr/vue-ssr-manifest.json' })
   ]
 })
 
@@ -41,6 +45,23 @@ Object.keys(projectConfig.pages).forEach(pageName => {
       filename: pageName + '.html',
       template: projectConfig.pages[pageName].template,
       chunks: ['manifest', 'vendor', pageName],
+      minify: {
+        removeComments: false,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      }
+    })
+  )
+
+  // ssr template
+  config.plugins.push(
+    new HTMLPlugin({
+      pageName,
+      allowFiles: new RegExp(`${pageName}|manifest|vendor`),
+      filename: './static/ssr/' + pageName + '.ssr.html',
+      template: projectConfig.pages[pageName].template,
+      chunks: ['manifest', 'vendor', pageName],
+      inject: true,
       minify: {
         removeComments: false,
         collapseWhitespace: true,

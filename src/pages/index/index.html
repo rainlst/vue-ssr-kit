@@ -16,7 +16,10 @@
       </div>
 
       <div id="ssr-content" class="ssr-content">
-        <!--vue-ssr-outlet-->
+        <% if(/ssr/.test(htmlWebpackPlugin.options.filename)) { %>
+          <%= '<!--vue-ssr-outlet-->' %>
+          <%= '{{{ renderState() }}}' %>
+        <%}%>  
       </div>
     </div>
   </body>

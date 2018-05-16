@@ -35,10 +35,13 @@ module.exports = function setupDevServer (app, cb) {
    */
   let templates = {}
 
+  let manifests = {}
+
   // 预先确定需要 SSR 的页面并预先定义对象.
   Object.keys(projectConfig.pages).forEach(pageName => {
     templates[pageName] = null
     bundles[pageName] = null
+    manifests[pageName] = null
     // if (projectConfig.pages[pageName].useSSR) {
     //   bundles[pageName] = null
     // }
@@ -71,18 +74,20 @@ module.exports = function setupDevServer (app, cb) {
 
     // 读取所有页面入口并生成模板.
     Object.keys(templates).forEach(pageName => {
-      const tplFilePath = path.join(clientConfig.output.path, `${pageName}.html`)
-      if (fs.existsSync(tplFilePath)) {
-        try {
-          templates[pageName] = fs.readFileSync(tplFilePath, 'utf-8')
-        } catch (error) {
-          console.error(`[Error] 读取页面 ${pageName} 页面失败:`)
-          console.error(error)
-          process.exit(1)
-        }
-      } else {
-        console.warn(`[Warn] 页面 ${pageName} 的模板路径 ${tplFilePath} 不存在, 此页面将无模板生成.`)
+      const manifestPath = path.join(clientConfig.output.path, `static/ssr/vue-ssr-manifest.json`)
+      const tplFilePath = path.join(clientConfig.output.path, `static/ssr/${pageName}.ssr.html`)
+      // if (fs.existsSync(tplFilePath)) {
+      try {
+        templates[pageName] = fs.readFileSync(tplFilePath, 'utf-8')
+        manifests[pageName] = JSON.parse(fs.readFileSync(manifestPath,'utf-8'))
+      } catch (error) {
+        console.error(`[Error] 读取manifest/template ${pageName} 页面失败:`)
+        console.error(error)
+        process.exit(1)
       }
+      // } else {
+        // console.warn(`[Warn] 页面 ${pageName} 的模板路径 ${tplFilePath} 不存在, 此页面将无模板生成.`)
+      // }
     })
 
     // 检查 bundles 内的项目是否全部载入完毕并执行回调.
@@ -95,7 +100,7 @@ module.exports = function setupDevServer (app, cb) {
     })
 
     if (doCallback) {
-      cb(bundles, templates)
+      cb(bundles, templates, manifests)
     }
   })
 
@@ -117,11 +122,13 @@ module.exports = function setupDevServer (app, cb) {
       stats.warnings.forEach(err => console.warn(err))
 
       // 读取对应页面的 server-bundle.
+      // const tplFilePath = path.join(webpackConfig.output.path, `static/ssr/${pageName}.ssr.html`)
       const bundlePath = path.join(webpackConfig.output.path, `static/ssr/ssr-bundle.${pageName}.json`)
       try {
+        // templates[pageName] = mfs.readFileSync(tplFilePath, 'utf-8')
         bundles[pageName] = JSON.parse(mfs.readFileSync(bundlePath, 'utf-8'))
       } catch (error) {
-        console.error(`[Error] static/ssr/ssr-bundle.${pageName}.json 读取失败: ${error}`)
+        console.error(`[Error]读取失败: ${error}`)
         process.exit(1)
       }
 
@@ -135,7 +142,7 @@ module.exports = function setupDevServer (app, cb) {
       })
 
       if (doCallback) {
-        cb(bundles, templates)
+        cb(bundles, templates, manifests)
       }
     })
   })

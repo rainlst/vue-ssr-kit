@@ -70,10 +70,11 @@ app.listen(port, () => {
  * @param template
  * @return {*}
  */
-function createRenderer (bundle, template) {
+function createRenderer (bundle, template, manifests) {
   // https://github.com/vuejs/vue/blob/dev/packages/vue-server-renderer/README.md#why-use-bundlerenderer
   return require('vue-server-renderer').createBundleRenderer(bundle, {
     template,
+    clientManifest: manifests,
     inject: false,
     cache: require('lru-cache')({
       max: 1000,
