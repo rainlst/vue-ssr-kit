@@ -5,6 +5,7 @@
 
 const webpack = require('webpack')
 const merge = require('webpack-merge')
+const HTMLPlugin = require('html-webpack-plugin')
 const VueSSRPlugin = require('vue-ssr-webpack-plugin')
 
 const baseConfig = require('./webpack.base.config')
@@ -49,6 +50,20 @@ Object.keys(projectConfig.pages).forEach(pageName => {
 
       new VueSSRPlugin({
         filename: `./static/ssr/ssr-bundle.${pageName}.json`
+      }),
+
+      new HTMLPlugin({
+        pageName,
+        allowFiles: new RegExp(`${pageName}|manifest|vendor`),
+        filename: './static/ssr/'+pageName + '.ssr.html',
+        template: projectConfig.pages[pageName].template,
+        chunks: ['manifest', 'vendor', pageName],
+        inject: true,
+        minify: {
+          removeComments: false,
+          collapseWhitespace: true,
+          removeAttributeQuotes: true
+        }
       })
     ]
   })
