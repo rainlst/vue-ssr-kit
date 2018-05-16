@@ -25,10 +25,11 @@ if (isProd) {
   pagesList.forEach(pageName => {
     const pageConfig = projectConfig.pages[pageName]
     if (!pageConfig.useSSR) { return }
+    const manifest = require( resolve(`./dist/static/ssr/vue-ssr-manifest.json`))
     const bundle = require(resolve(`./dist/static/ssr/ssr-bundle.${pageName}.json`))
     try {
-      const template = fs.readFileSync(resolve(`./dist/${pageName}.html`), 'utf-8')
-      global.renderers[pageName] = createRenderer(bundle, template)
+      const template = fs.readFileSync(resolve(`./dist/static/ssr/${pageName}.ssr.html`), 'utf-8')
+      global.renderers[pageName] = createRenderer(bundle, template, manifest)
     } catch (error) {
       console.error(`[Error] 读取页面 ${pageName} 模板文件失败: ${error}`)
       process.exit(1)

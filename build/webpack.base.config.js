@@ -48,7 +48,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '../dist'),
     publicPath: isProd
-      ? '/'
+      ? '/dist/'
       : '/dist/',
     filename: 'static/js/[name].[chunkhash].js'
   },
